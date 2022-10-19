@@ -50,4 +50,26 @@ public class UserController {
 
         return userResponse;
     }
+
+    public ResponseEntity<UserModel> deleteUser(
+            @PathVariable(name = "userId") UUID userId
+    ) {
+        Optional<UserModel> userModelOptional = this.userService.findById(userId);
+
+        if (userModelOptional.isEmpty()) {
+            ResponseEntity<UserModel> userResponse = ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .build();
+
+            return userResponse;
+        }
+
+        this.userService.delete(userModelOptional.get());
+
+        ResponseEntity<UserModel> userResponse = ResponseEntity
+                .status(HttpStatus.OK)
+                .build();
+
+        return userResponse;
+    }
 }

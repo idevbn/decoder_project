@@ -29,4 +29,9 @@ public class UserServiceImpl implements UserService {
 
         return userModelOptional;
     }
+
+    @Override
+    public void delete(UserModel userModel) {
+        this.userRepository.delete(userModel);
+    }
 }
