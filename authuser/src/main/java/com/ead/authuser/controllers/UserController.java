@@ -51,6 +51,7 @@ public class UserController {
         return userResponse;
     }
 
+    @DeleteMapping(value = "/{userId}")
     public ResponseEntity<UserModel> deleteUser(
             @PathVariable(name = "userId") UUID userId
     ) {
