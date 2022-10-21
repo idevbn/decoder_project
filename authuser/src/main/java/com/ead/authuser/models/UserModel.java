@@ -12,6 +12,14 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * Modelo de um Usuário, que será mapeado para a tabela
+ * tb_users no banco de dados.
+ * A opção pelo identificador do tipo UUID foi para evitar
+ * conflito entre identificadores únicos que eventualmente
+ * aconteceria entre os microsserviços.
+ * A utilização do UUID reduz a chance de ids iguais.
+ */
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
