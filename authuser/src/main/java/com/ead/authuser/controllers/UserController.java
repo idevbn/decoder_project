@@ -1,12 +1,16 @@
 package com.ead.authuser.controllers;
 
+import com.ead.authuser.controllers.dtos.UserDTO;
 import com.ead.authuser.models.UserModel;
 import com.ead.authuser.services.UserService;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -70,6 +74,99 @@ public class UserController {
         ResponseEntity<UserModel> userResponse = ResponseEntity
                 .status(HttpStatus.OK)
                 .build();
+
+        return userResponse;
+    }
+
+    @PutMapping(value = "/{userId}")
+    public ResponseEntity<UserModel> updateUser(
+            @PathVariable(name = "userId") UUID userId,
+            @RequestBody @JsonView(UserDTO.UserView.UserPut.class) UserDTO userDTO
+    ) {
+        Optional<UserModel> userModelOptional = this.userService.findById(userId);
+
+        if (userModelOptional.isEmpty()) {
+            ResponseEntity<UserModel> userResponse = ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .build();
+
+            return userResponse;
+        }
+
+        UserModel userModel = userModelOptional.get();
+        userModel.setFullName(userDTO.getFullName());
+        userModel.setPhoneNumber(userDTO.getPhoneNumber());
+        userModel.setCpf(userDTO.getCpf());
+        userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
+
+        this.userService.save(userModel);
+
+        ResponseEntity<UserModel> userResponse = ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userModel);
+
+        return userResponse;
+    }
+
+    @PutMapping(value = "/{userId}/password")
+    public ResponseEntity<UserModel> updatePassword(
+            @PathVariable(name = "userId") UUID userId,
+            @RequestBody @JsonView(UserDTO.UserView.PasswordPut.class) UserDTO userDTO
+    ) {
+        Optional<UserModel> userModelOptional = this.userService.findById(userId);
+
+        if (userModelOptional.isEmpty()) {
+            ResponseEntity<UserModel> userResponse = ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .build();
+
+            return userResponse;
+        }
+
+        if (userModelOptional.get().getPassword().equals(userDTO.getPassword())) {
+            ResponseEntity<UserModel> userResponse = ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .build();
+
+            return userResponse;
+        }
+
+        UserModel userModel = userModelOptional.get();
+        userModel.setPassword(userDTO.getPassword());
+        userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
+
+        this.userService.save(userModel);
+
+        ResponseEntity<UserModel> userResponse = ResponseEntity
+                .status(HttpStatus.OK)
+                .build();
+
+        return userResponse;
+    }
+    @PutMapping(value = "/{userId}/image")
+    public ResponseEntity<UserModel> updateImage(
+            @PathVariable(name = "userId") UUID userId,
+            @RequestBody @JsonView(UserDTO.UserView.ImagePut.class) UserDTO userDTO
+    ) {
+        Optional<UserModel> userModelOptional = this.userService.findById(userId);
+
+        if (userModelOptional.isEmpty()) {
+            ResponseEntity<UserModel> userResponse = ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .build();
+
+            return userResponse;
+        }
+
+        UserModel userModel = userModelOptional.get();
+        userModel.setImageUrl(userDTO.getImageUrl());
+        userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
+
+        this.userService.save(userModel);
+
+        ResponseEntity<UserModel> userResponse = ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userModel);
 
         return userResponse;
     }
