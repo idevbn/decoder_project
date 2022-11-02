@@ -23,7 +23,6 @@ public class UserDTO {
         public static interface UserPut {}
         public static interface PasswordPut {}
         public static interface ImagePut {}
-
     }
 
     private UUID id;
