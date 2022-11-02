@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -85,7 +86,9 @@ public class UserController {
     @PutMapping(value = "/{userId}")
     public ResponseEntity<UserModel> updateUser(
             @PathVariable(name = "userId") final UUID userId,
-            @RequestBody @JsonView(UserDTO.UserView.UserPut.class) final UserDTO userDTO
+            @RequestBody
+            @Validated(UserDTO.UserView.UserPut.class)
+            @JsonView(UserDTO.UserView.UserPut.class) final UserDTO userDTO
     ) {
         Optional<UserModel> userModelOptional = this.userService.findById(userId);
 
@@ -115,7 +118,9 @@ public class UserController {
     @PutMapping(value = "/{userId}/password")
     public ResponseEntity<UserModel> updatePassword(
             @PathVariable(name = "userId") final UUID userId,
-            @RequestBody @JsonView(UserDTO.UserView.PasswordPut.class) final UserDTO userDTO
+            @RequestBody
+            @Validated(UserDTO.UserView.PasswordPut.class)
+            @JsonView(UserDTO.UserView.PasswordPut.class) final UserDTO userDTO
     ) {
         Optional<UserModel> userModelOptional = this.userService.findById(userId);
 
@@ -151,7 +156,9 @@ public class UserController {
     @PutMapping(value = "/{userId}/image")
     public ResponseEntity<UserModel> updateImage(
             @PathVariable(name = "userId") final UUID userId,
-            @RequestBody @JsonView(UserDTO.UserView.ImagePut.class) final UserDTO userDTO
+            @RequestBody
+            @Validated(UserDTO.UserView.ImagePut.class)
+            @JsonView(UserDTO.UserView.ImagePut.class) final UserDTO userDTO
     ) {
         Optional<UserModel> userModelOptional = this.userService.findById(userId);
 
