@@ -30,24 +30,24 @@ public class UserDTO {
     /**
      * O @NotBlank não permite valores NULOS nem valores VAZIOS
      */
-    @Size(min = 4, max = 50)
     @JsonView(UserView.RegistrationPost.class)
     @NotBlank(groups = UserView.RegistrationPost.class)
+    @Size(min = 4, max = 50, groups = UserView.RegistrationPost.class)
     private String username;
 
-    @Email
     @JsonView(UserView.RegistrationPost.class)
+    @Email(groups = UserView.RegistrationPost.class)
     @NotBlank(groups = UserView.RegistrationPost.class)
     private String email;
 
-    @Size(min = 6, max = 20)
     @JsonView({UserView.RegistrationPost.class, UserView.PasswordPut.class})
     @NotBlank(groups = {UserView.RegistrationPost.class, UserView.PasswordPut.class})
+    @Size(min = 6, max = 20, groups = {UserView.RegistrationPost.class, UserView.PasswordPut.class})
     private String password;
 
-    @Size(min = 6, max = 20)
     @JsonView(UserView.PasswordPut.class)
     @NotBlank(groups = UserView.PasswordPut.class)
+    @Size(min = 6, max = 20, groups = UserView.PasswordPut.class)
     private String oldPassword;
 
     @JsonView({UserView.RegistrationPost.class, UserView.UserPut.class})
