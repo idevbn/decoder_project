@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface UserService {
+
     List<UserModel> findAll();
 
     Optional<UserModel> findById(UUID id);
@@ -18,4 +19,5 @@ public interface UserService {
     boolean existsByUserName(String username);
 
     boolean existsByEmail(String email);
+
 }

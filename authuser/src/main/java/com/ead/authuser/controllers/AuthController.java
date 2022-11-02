@@ -16,20 +16,24 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 @RestController
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping(value = "/auth")
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class AuthController {
 
+    private final UserService userService;
+
     @Autowired
-    private UserService userService;
+    public AuthController(final UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping(value = "/signup")
     public ResponseEntity<Object> registerUser(
             @RequestBody
-            @JsonView(UserDTO.UserView.RegistrationPost.class) UserDTO userDTO
+            @JsonView(UserDTO.UserView.RegistrationPost.class) final UserDTO userDTO
             ) {
         if (this.userService.existsByUserName(userDTO.getUsername())) {
-            ResponseEntity<Object> userResponse = ResponseEntity
+            final ResponseEntity<Object> userResponse = ResponseEntity
                     .status(HttpStatus.CONFLICT)
                     .body("Error: Username is already taken!");
 
@@ -37,7 +41,7 @@ public class AuthController {
         }
 
         if (this.userService.existsByEmail(userDTO.getEmail())) {
-            ResponseEntity<Object> userResponse = ResponseEntity
+            final ResponseEntity<Object> userResponse = ResponseEntity
                     .status(HttpStatus.CONFLICT)
                     .body("Error: Email is already taken!");
 
@@ -54,10 +58,11 @@ public class AuthController {
 
         this.userService.save(userModel);
 
-        ResponseEntity<Object> userResponse = ResponseEntity.
+        final ResponseEntity<Object> userResponse = ResponseEntity.
                 status(HttpStatus.CREATED)
                 .body(userModel);
 
         return userResponse;
     }
+
 }

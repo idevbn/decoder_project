@@ -20,14 +20,18 @@ import java.util.UUID;
 @RequestMapping(value = "/users")
 public class UserController {
 
+    private final UserService userService;
+
     @Autowired
-    UserService userService;
+    public UserController(final UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping
     public ResponseEntity<List<UserModel>> getAllUsers() {
-        List<UserModel> users = this.userService.findAll();
+        final List<UserModel> users = this.userService.findAll();
 
-        ResponseEntity<List<UserModel>> usersResponse = ResponseEntity
+        final ResponseEntity<List<UserModel>> usersResponse = ResponseEntity
                 .status(HttpStatus.OK)
                 .body(users);
 
@@ -36,19 +40,19 @@ public class UserController {
 
     @GetMapping(value = "/{userId}")
     public ResponseEntity<UserModel> getOneUser(
-            @PathVariable(name = "userId") UUID userId
+            @PathVariable(name = "userId") final UUID userId
     ) {
         Optional<UserModel> userModelOptional = this.userService.findById(userId);
 
         if (userModelOptional.isEmpty()) {
-            ResponseEntity<UserModel> userResponse = ResponseEntity
+            final ResponseEntity<UserModel> userResponse = ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .build();
             
             return userResponse;
         }
 
-        ResponseEntity<UserModel> userResponse = ResponseEntity
+        final ResponseEntity<UserModel> userResponse = ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userModelOptional.get());
 
@@ -57,12 +61,12 @@ public class UserController {
 
     @DeleteMapping(value = "/{userId}")
     public ResponseEntity<UserModel> deleteUser(
-            @PathVariable(name = "userId") UUID userId
+            @PathVariable(name = "userId") final UUID userId
     ) {
         Optional<UserModel> userModelOptional = this.userService.findById(userId);
 
         if (userModelOptional.isEmpty()) {
-            ResponseEntity<UserModel> userResponse = ResponseEntity
+            final ResponseEntity<UserModel> userResponse = ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .build();
 
@@ -71,7 +75,7 @@ public class UserController {
 
         this.userService.delete(userModelOptional.get());
 
-        ResponseEntity<UserModel> userResponse = ResponseEntity
+        final ResponseEntity<UserModel> userResponse = ResponseEntity
                 .status(HttpStatus.OK)
                 .build();
 
@@ -80,20 +84,20 @@ public class UserController {
 
     @PutMapping(value = "/{userId}")
     public ResponseEntity<UserModel> updateUser(
-            @PathVariable(name = "userId") UUID userId,
-            @RequestBody @JsonView(UserDTO.UserView.UserPut.class) UserDTO userDTO
+            @PathVariable(name = "userId") final UUID userId,
+            @RequestBody @JsonView(UserDTO.UserView.UserPut.class) final UserDTO userDTO
     ) {
         Optional<UserModel> userModelOptional = this.userService.findById(userId);
 
         if (userModelOptional.isEmpty()) {
-            ResponseEntity<UserModel> userResponse = ResponseEntity
+            final ResponseEntity<UserModel> userResponse = ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .build();
 
             return userResponse;
         }
 
-        UserModel userModel = userModelOptional.get();
+        final UserModel userModel = userModelOptional.get();
         userModel.setFullName(userDTO.getFullName());
         userModel.setPhoneNumber(userDTO.getPhoneNumber());
         userModel.setCpf(userDTO.getCpf());
@@ -101,7 +105,7 @@ public class UserController {
 
         this.userService.save(userModel);
 
-        ResponseEntity<UserModel> userResponse = ResponseEntity
+        final ResponseEntity<UserModel> userResponse = ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userModel);
 
@@ -110,13 +114,13 @@ public class UserController {
 
     @PutMapping(value = "/{userId}/password")
     public ResponseEntity<UserModel> updatePassword(
-            @PathVariable(name = "userId") UUID userId,
-            @RequestBody @JsonView(UserDTO.UserView.PasswordPut.class) UserDTO userDTO
+            @PathVariable(name = "userId") final UUID userId,
+            @RequestBody @JsonView(UserDTO.UserView.PasswordPut.class) final UserDTO userDTO
     ) {
         Optional<UserModel> userModelOptional = this.userService.findById(userId);
 
         if (userModelOptional.isEmpty()) {
-            ResponseEntity<UserModel> userResponse = ResponseEntity
+            final ResponseEntity<UserModel> userResponse = ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .build();
 
@@ -124,29 +128,30 @@ public class UserController {
         }
 
         if (userModelOptional.get().getPassword().equals(userDTO.getPassword())) {
-            ResponseEntity<UserModel> userResponse = ResponseEntity
+            final ResponseEntity<UserModel> userResponse = ResponseEntity
                     .status(HttpStatus.CONFLICT)
                     .build();
 
             return userResponse;
         }
 
-        UserModel userModel = userModelOptional.get();
+        final UserModel userModel = userModelOptional.get();
         userModel.setPassword(userDTO.getPassword());
         userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
 
         this.userService.save(userModel);
 
-        ResponseEntity<UserModel> userResponse = ResponseEntity
+        final ResponseEntity<UserModel> userResponse = ResponseEntity
                 .status(HttpStatus.OK)
                 .build();
 
         return userResponse;
     }
+
     @PutMapping(value = "/{userId}/image")
     public ResponseEntity<UserModel> updateImage(
-            @PathVariable(name = "userId") UUID userId,
-            @RequestBody @JsonView(UserDTO.UserView.ImagePut.class) UserDTO userDTO
+            @PathVariable(name = "userId") final UUID userId,
+            @RequestBody @JsonView(UserDTO.UserView.ImagePut.class) final UserDTO userDTO
     ) {
         Optional<UserModel> userModelOptional = this.userService.findById(userId);
 
@@ -164,10 +169,11 @@ public class UserController {
 
         this.userService.save(userModel);
 
-        ResponseEntity<UserModel> userResponse = ResponseEntity
+        final ResponseEntity<UserModel> userResponse = ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userModel);
 
         return userResponse;
     }
+
 }

@@ -48,4 +48,5 @@ public class UserDTO {
 
     @JsonView(UserView.ImagePut.class)
     private String imageUrl;
+
 }

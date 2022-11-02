@@ -21,9 +21,9 @@ import java.util.UUID;
  * A utilização do UUID reduz a chance de ids iguais.
  */
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
 @Table(name = "tb_users")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserModel implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -69,4 +69,5 @@ public class UserModel implements Serializable {
     @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime lastUpdateDate;
+
 }
