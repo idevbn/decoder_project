@@ -1,6 +1,8 @@
 package com.ead.authuser.services;
 
 import com.ead.authuser.models.UserModel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,12 +14,14 @@ public interface UserService {
 
     Optional<UserModel> findById(UUID id);
 
-    void delete(UserModel userModel);
+    void delete(final UserModel userModel);
 
-    UserModel save(UserModel userModel);
+    UserModel save(final UserModel userModel);
 
-    boolean existsByUserName(String username);
+    boolean existsByUserName(final String username);
 
     boolean existsByEmail(String email);
+
+    Page<UserModel> findAll(final Pageable pageable);
 
 }
