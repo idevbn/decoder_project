@@ -40,8 +40,8 @@ public class ModuleModel implements Serializable {
     private CourseModel course;
 
     @Fetch(FetchMode.SUBSELECT)
-    @OneToMany(mappedBy = "module", fetch = FetchType.LAZY)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @OneToMany(mappedBy = "module", fetch = FetchType.LAZY)
     private Set<LessonModel> lessons;
 
 }
