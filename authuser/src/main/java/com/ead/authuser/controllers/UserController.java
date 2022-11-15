@@ -60,7 +60,7 @@ public class UserController {
     public ResponseEntity<UserModel> getOneUser(
             @PathVariable(name = "userId") final UUID userId
     ) {
-        Optional<UserModel> userModelOptional = this.userService.findById(userId);
+        final Optional<UserModel> userModelOptional = this.userService.findById(userId);
 
         if (userModelOptional.isEmpty()) {
             final ResponseEntity<UserModel> userResponse = ResponseEntity
@@ -81,7 +81,7 @@ public class UserController {
     public ResponseEntity<UserModel> deleteUser(
             @PathVariable(name = "userId") final UUID userId
     ) {
-        Optional<UserModel> userModelOptional = this.userService.findById(userId);
+        final Optional<UserModel> userModelOptional = this.userService.findById(userId);
 
         if (userModelOptional.isEmpty()) {
             final ResponseEntity<UserModel> userResponse = ResponseEntity
@@ -107,7 +107,7 @@ public class UserController {
             @Validated(UserDTO.UserView.UserPut.class)
             @JsonView(UserDTO.UserView.UserPut.class) final UserDTO userDTO
     ) {
-        Optional<UserModel> userModelOptional = this.userService.findById(userId);
+        final Optional<UserModel> userModelOptional = this.userService.findById(userId);
 
         if (userModelOptional.isEmpty()) {
             final ResponseEntity<UserModel> userResponse = ResponseEntity
@@ -139,7 +139,7 @@ public class UserController {
             @Validated(UserDTO.UserView.PasswordPut.class)
             @JsonView(UserDTO.UserView.PasswordPut.class) final UserDTO userDTO
     ) {
-        Optional<UserModel> userModelOptional = this.userService.findById(userId);
+        final Optional<UserModel> userModelOptional = this.userService.findById(userId);
 
         if (userModelOptional.isEmpty()) {
             final ResponseEntity<UserModel> userResponse = ResponseEntity
@@ -177,17 +177,17 @@ public class UserController {
             @Validated(UserDTO.UserView.ImagePut.class)
             @JsonView(UserDTO.UserView.ImagePut.class) final UserDTO userDTO
     ) {
-        Optional<UserModel> userModelOptional = this.userService.findById(userId);
+        final Optional<UserModel> userModelOptional = this.userService.findById(userId);
 
         if (userModelOptional.isEmpty()) {
-            ResponseEntity<UserModel> userResponse = ResponseEntity
+            final ResponseEntity<UserModel> userResponse = ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .build();
 
             return userResponse;
         }
 
-        UserModel userModel = userModelOptional.get();
+        final UserModel userModel = userModelOptional.get();
         userModel.setImageUrl(userDTO.getImageUrl());
         userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
 

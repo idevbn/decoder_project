@@ -13,7 +13,7 @@ public interface UserService {
 
     List<UserModel> findAll();
 
-    Optional<UserModel> findById(UUID id);
+    Optional<UserModel> findById(final UUID id);
 
     void delete(final UserModel userModel);
 
@@ -21,7 +21,7 @@ public interface UserService {
 
     boolean existsByUserName(final String username);
 
-    boolean existsByEmail(String email);
+    boolean existsByEmail(final String email);
 
     Page<UserModel> findAll(final Specification<UserModel> spec, final Pageable pageable);
 

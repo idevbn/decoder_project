@@ -16,45 +16,49 @@ import java.util.UUID;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private final UserRepository userRepository;
+
     @Autowired
-    UserRepository userRepository;
+    public UserServiceImpl(final UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public List<UserModel> findAll() {
-        List<UserModel> users = this.userRepository.findAll();
+        final List<UserModel> users = this.userRepository.findAll();
 
         return users;
     }
 
     @Override
-    public Optional<UserModel> findById(UUID id) {
-        Optional<UserModel> userModelOptional = this.userRepository.findById(id);
+    public Optional<UserModel> findById(final UUID id) {
+        final Optional<UserModel> userModelOptional = this.userRepository.findById(id);
 
         return userModelOptional;
     }
 
     @Override
-    public void delete(UserModel userModel) {
+    public void delete(final UserModel userModel) {
         this.userRepository.delete(userModel);
     }
 
     @Override
-    public UserModel save(UserModel userModel) {
-        UserModel user = this.userRepository.save(userModel);
+    public UserModel save(final UserModel userModel) {
+        final UserModel user = this.userRepository.save(userModel);
 
         return user;
     }
 
     @Override
-    public boolean existsByUserName(String username) {
-        boolean existsUsername = this.userRepository.existsByUsername(username);
+    public boolean existsByUserName(final String username) {
+        final boolean existsUsername = this.userRepository.existsByUsername(username);
 
         return existsUsername;
     }
 
     @Override
-    public boolean existsByEmail(String email) {
-        boolean existsEmail = this.userRepository.existsByEmail(email);
+    public boolean existsByEmail(final String email) {
+        final boolean existsEmail = this.userRepository.existsByEmail(email);
 
         return existsEmail;
     }
