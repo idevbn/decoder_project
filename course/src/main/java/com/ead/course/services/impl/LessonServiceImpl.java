@@ -1,5 +1,6 @@
 package com.ead.course.services.impl;
 
+import com.ead.course.repositories.LessonRepository;
 import com.ead.course.services.LessonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -7,11 +8,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class LessonServiceImpl implements LessonService {
 
-    private final LessonService lessonService;
+    private final LessonRepository lessonRepository;
 
     @Autowired
-    public LessonServiceImpl(final LessonService lessonService) {
-        this.lessonService = lessonService;
+    public LessonServiceImpl(final LessonRepository lessonRepository) {
+        this.lessonRepository = lessonRepository;
     }
 
 }
