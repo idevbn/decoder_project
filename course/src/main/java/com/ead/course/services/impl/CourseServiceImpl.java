@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -65,6 +67,27 @@ public class CourseServiceImpl implements CourseService {
         }
 
         this.courseRepository.delete(courseModel);
+    }
+
+    @Override
+    public CourseModel save(final CourseModel courseModel) {
+        final CourseModel savedCourseModel = this.courseRepository.save(courseModel);
+
+        return savedCourseModel;
+    }
+
+    @Override
+    public Optional<CourseModel> findById(final UUID id) {
+        final Optional<CourseModel> optionalCourseModel = this.courseRepository.findById(id);
+
+        return optionalCourseModel;
+    }
+
+    @Override
+    public List<CourseModel> findAll() {
+        final List<CourseModel> courses = this.courseRepository.findAll();
+
+        return courses;
     }
 
 }
