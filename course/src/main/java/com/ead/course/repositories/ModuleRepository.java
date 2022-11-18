@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface ModuleRepository extends JpaRepository<ModuleModel, UUID> {
@@ -25,4 +26,9 @@ public interface ModuleRepository extends JpaRepository<ModuleModel, UUID> {
     @Query(value = "SELECT * FROM tb_modules WHERE course_id = :id", nativeQuery = true)
     List<ModuleModel> findAllModulesIntoCourse(@Param("id") final UUID id);
 
+    @Query(value = "SELECT * FROM tb_modules WHERE course_id = :courseId AND id = :moduleId", nativeQuery = true)
+    Optional<ModuleModel> findModuleIntoCourse(
+            @Param("courseId") final UUID courseId,
+            @Param("moduleId") final UUID moduleId
+    );
 }
