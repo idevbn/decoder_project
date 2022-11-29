@@ -133,8 +133,9 @@ public class ModuleController {
                 = this.moduleService.findModuleIntoCourse(courseId, moduleId);
 
         if (!optionalModuleModel.isPresent()) {
-            final ResponseEntity<ModuleModel> moduleResponse
-                    = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            final ResponseEntity<ModuleModel> moduleResponse = ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .build();
 
             return moduleResponse;
         }
