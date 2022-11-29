@@ -16,4 +16,6 @@ public interface ModuleService {
 
     List<ModuleModel> findAllByCourse(final UUID courseId);
 
+    Optional<ModuleModel> findById(final UUID moduleId);
+
 }

@@ -64,4 +64,11 @@ public class ModuleServiceImpl implements ModuleService {
         return modulesIntoCourse;
     }
 
+    @Override
+    public Optional<ModuleModel> findById(final UUID moduleId) {
+        final Optional<ModuleModel> optionalModuleModel = this.moduleRepository.findById(moduleId);
+
+        return optionalModuleModel;
+    }
+
 }
