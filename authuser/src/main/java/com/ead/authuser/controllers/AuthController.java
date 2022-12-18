@@ -72,7 +72,7 @@ public class AuthController {
                 status(HttpStatus.CREATED)
                 .body(userModel);
 
-        log.debug("POST registerUser userModel saved {}", userModel.toString());
+        log.debug("POST registerUser userModel userId {}", userModel.getId());
         log.info("User saved successfully userId {}", userModel.getId());
 
         return userResponse;

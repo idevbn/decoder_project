@@ -183,7 +183,7 @@ public class UserController {
                 .status(HttpStatus.OK)
                 .build();
 
-        log.debug("PUT updatePassword userModel saved {} ", userModel.toString());
+        log.debug("PUT updatePassword userModel userId {} ", userModel.getId());
         log.info("Password updated successfully userId {} ", userModel.getId());
 
         return userResponse;
@@ -218,7 +218,7 @@ public class UserController {
                 .status(HttpStatus.OK)
                 .body(userModel);
 
-        log.debug("PUT updateImage userModel saved {} ", userModel.toString());
+        log.debug("PUT updateImage userModel userId {} ", userModel.getId());
         log.info("Image updated successfully userId {} ", userModel.getId());
 
         return userResponse;
