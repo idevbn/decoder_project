@@ -41,9 +41,18 @@ public class UserController {
     public ResponseEntity<Page<UserModel>> getAllUsers(
             final SpecificationTemplate.UserSpec spec,
             @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC)
-            final Pageable pageable
+            final Pageable pageable,
+            @RequestParam(required = false) final UUID courseId
             ) {
-        final Page<UserModel> userModelPage = this.userService.findAll(spec, pageable);
+        Page<UserModel> userModelPage = null;
+
+        if (courseId != null) {
+            userModelPage = this
+                    .userService
+                    .findAll(SpecificationTemplate.userCourseId(courseId).and(spec), pageable);
+        } else {
+            userModelPage = this.userService.findAll(spec, pageable);
+        }
 
         if (!userModelPage.isEmpty()) {
             for (UserModel user : userModelPage.toList()) {
