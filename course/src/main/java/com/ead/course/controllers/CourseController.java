@@ -96,12 +96,20 @@ public class CourseController {
     public ResponseEntity<Page<CourseModel>> getAllCourses(
             final SpecificationTemplate.CourseSpec spec,
             @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC)
-            final Pageable pageable
+            final Pageable pageable,
+            @RequestParam(required = false) final UUID userId
     ) {
-        final Page<CourseModel> courseModelPage = this.courseService.findAll(spec, pageable);
+        Page<CourseModel> courseModelPagel = null;
+
+        if (userId != null) {
+            courseModelPagel = this.courseService
+                    .findAll(SpecificationTemplate.courseUserId(userId).and(spec), pageable);
+        } else {
+            courseModelPagel = this.courseService.findAll(spec, pageable);
+        }
 
         final ResponseEntity<Page<CourseModel>> coursesResponse
-                = ResponseEntity.status(HttpStatus.OK).body(courseModelPage);
+                = ResponseEntity.status(HttpStatus.OK).body(courseModelPagel);
 
         return coursesResponse;
     }
