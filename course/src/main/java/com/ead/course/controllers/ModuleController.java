@@ -119,7 +119,7 @@ public class ModuleController {
     public ResponseEntity<Page<ModuleModel>> getAllModules(
             @PathVariable(value = "courseId") final UUID courseId,
             final SpecificationTemplate.ModuleSpec spec,
-            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC)
+            @PageableDefault(page = 0, size = 10, sort = "moduleId", direction = Sort.Direction.ASC)
             final Pageable pageable
     ) {
         final Page<ModuleModel> modules = this.moduleService

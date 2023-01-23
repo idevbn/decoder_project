@@ -45,7 +45,7 @@ public class SpecificationTemplate {
             final Expression<Collection<ModuleModel>> courseModules = course.get("modules");
 
             return cb.and(
-                    cb.equal(course.get("id"), courseId), cb.isMember(module, courseModules)
+                    cb.equal(course.get("courseId"), courseId), cb.isMember(module, courseModules)
             );
         };
     }
@@ -61,7 +61,7 @@ public class SpecificationTemplate {
             final Expression<Collection<LessonModel>> moduleLessons = module.get("lessons");
 
             return cb.and(
-                    cb.equal(module.get("id"), moduleId), cb.isMember(lesson, moduleLessons)
+                    cb.equal(module.get("moduleId"), moduleId), cb.isMember(lesson, moduleLessons)
             );
         };
     }

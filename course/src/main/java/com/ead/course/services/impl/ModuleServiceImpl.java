@@ -35,7 +35,7 @@ public class ModuleServiceImpl implements ModuleService {
     @Transactional
     public void delete(final ModuleModel moduleModel) {
         final List<LessonModel> lessonModelList
-                = this.lessonRepository.findAllLessonsIntoModule(moduleModel.getId());
+                = this.lessonRepository.findAllLessonsIntoModule(moduleModel.getModuleId());
 
         if (!lessonModelList.isEmpty()) {
             this.lessonRepository.deleteAll(lessonModelList);
