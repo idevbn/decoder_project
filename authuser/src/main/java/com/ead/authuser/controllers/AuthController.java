@@ -72,8 +72,8 @@ public class AuthController {
                 status(HttpStatus.CREATED)
                 .body(userModel);
 
-        log.debug("POST registerUser userModel userId {}", userModel.getId());
-        log.info("User saved successfully userId {}", userModel.getId());
+        log.debug("POST registerUser userModel userId {}", userModel.getUserId());
+        log.info("User saved successfully userId {}", userModel.getUserId());
 
         return userResponse;
     }

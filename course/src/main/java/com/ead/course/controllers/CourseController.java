@@ -69,7 +69,7 @@ public class CourseController {
     @PutMapping(value = "/{id}")
     public ResponseEntity<CourseModel> updateCourse(
             @PathVariable(value = "id") final UUID id,
-            @RequestBody @Valid CourseDTO courseDTO
+            @RequestBody @Valid final CourseDTO courseDTO
     ) {
         final Optional<CourseModel> optionalCourseModel = this.courseService.findById(id);
 
@@ -95,7 +95,7 @@ public class CourseController {
     @GetMapping
     public ResponseEntity<Page<CourseModel>> getAllCourses(
             final SpecificationTemplate.CourseSpec spec,
-            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC)
+            @PageableDefault(page = 0, size = 10, sort = "courseId", direction = Sort.Direction.ASC)
             final Pageable pageable,
             @RequestParam(required = false) final UUID userId
     ) {

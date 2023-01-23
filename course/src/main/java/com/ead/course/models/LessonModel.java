@@ -20,7 +20,7 @@ public class LessonModel implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private UUID lessonId;
 
     @Column(nullable = false, unique = true, length = 150)
     private String title;

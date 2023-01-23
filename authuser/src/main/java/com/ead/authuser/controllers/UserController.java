@@ -40,7 +40,7 @@ public class UserController {
     @GetMapping
     public ResponseEntity<Page<UserModel>> getAllUsers(
             final SpecificationTemplate.UserSpec spec,
-            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC)
+            @PageableDefault(page = 0, size = 10, sort = "userId", direction = Sort.Direction.ASC)
             final Pageable pageable,
             @RequestParam(required = false) final UUID courseId
             ) {
@@ -56,7 +56,8 @@ public class UserController {
 
         if (!userModelPage.isEmpty()) {
             for (UserModel user : userModelPage.toList()) {
-                user.add(linkTo(methodOn(UserController.class).getOneUser(user.getId())).withSelfRel());
+                user.add(linkTo(methodOn(UserController.class)
+                        .getOneUser(user.getUserId())).withSelfRel());
             }
         }
 
@@ -148,7 +149,7 @@ public class UserController {
                 .body(userModel);
 
         log.debug("PUT updateUser userModel saved {} ", userModel.toString());
-        log.info("User updated successfully userId {} ", userModel.getId());
+        log.info("User updated successfully userId {} ", userModel.getUserId());
 
         return userResponse;
     }
@@ -192,8 +193,8 @@ public class UserController {
                 .status(HttpStatus.OK)
                 .build();
 
-        log.debug("PUT updatePassword userModel userId {} ", userModel.getId());
-        log.info("Password updated successfully userId {} ", userModel.getId());
+        log.debug("PUT updatePassword userModel userId {} ", userModel.getUserId());
+        log.info("Password updated successfully userId {} ", userModel.getUserId());
 
         return userResponse;
     }
@@ -227,8 +228,8 @@ public class UserController {
                 .status(HttpStatus.OK)
                 .body(userModel);
 
-        log.debug("PUT updateImage userModel userId {} ", userModel.getId());
-        log.info("Image updated successfully userId {} ", userModel.getId());
+        log.debug("PUT updateImage userModel userId {} ", userModel.getUserId());
+        log.info("Image updated successfully userId {} ", userModel.getUserId());
 
         return userResponse;
     }

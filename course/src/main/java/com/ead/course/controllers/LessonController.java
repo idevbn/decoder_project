@@ -119,7 +119,7 @@ public class LessonController {
     public ResponseEntity<Page<LessonModel>> getAllLessons(
             @PathVariable(value = "moduleId") final UUID moduleId,
             final SpecificationTemplate.LessonSpec spec,
-            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC)
+            @PageableDefault(page = 0, size = 10, sort = "lessonId", direction = Sort.Direction.ASC)
             final Pageable pageable
     ) {
         final Page<LessonModel> lessons = this.lessonService
