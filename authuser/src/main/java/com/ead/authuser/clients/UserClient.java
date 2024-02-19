@@ -33,49 +33,28 @@ public class UserClient {
         this.utilsService = utilsService;
     }
 
-//    public Page<CourseDTO> getAllCoursesByUser(final UUID userId, final Pageable pageable) {
-//        List<CourseDTO> searchResult;
-//        ResponseEntity<ResponsePageDTO<CourseDTO>> result = null;
-//
-//        final String url = this.utilsService.createUrl(userId, pageable);
-//
-//        log.debug("Request URL: {}", url);
-//        log.info("Request URL: {}", url);
-//
-//        try {
-//            final ParameterizedTypeReference<ResponsePageDTO<CourseDTO>> responseType =
-//                    new ParameterizedTypeReference<ResponsePageDTO<CourseDTO>>() {};
-//
-//            final ResponseEntity<ResponsePageDTO<CourseDTO>> exchange = restTemplate
-//                    .exchange(url, HttpMethod.GET, null, responseType);
-//
-//            searchResult = result.getBody().getContent();
-//
-//            log.debug("Response Number of Elements: {}", searchResult.size());
-//        } catch (final HttpStatusCodeException e) {
-//
-//            log.error("Error request /courses: {}", e);
-//        }
-//
-//        log.info("Ending request /courses userId = {}", userId);
-//
-//        final ResponsePageDTO<CourseDTO> response = result.getBody();
-//
-//        return response;
-//    }
+    public Page<CourseDTO> getAllCoursesByUser(final UUID userId, final Pageable pageable) {
+        final List<CourseDTO> searchResult;
 
-    public Page<CourseDTO> getAllCoursesByUser(UUID userId, Pageable pageable){
-        List<CourseDTO> searchResult = null;
         ResponseEntity<ResponsePageDTO<CourseDTO>> result = null;
-        String url = utilsService.createUrl(userId, pageable);
+
+        final String url = this.utilsService.createUrl(userId, pageable);
+
         log.debug("Request URL: {} ", url);
+
         log.info("Request URL: {} ", url);
-        try{
-            ParameterizedTypeReference<ResponsePageDTO<CourseDTO>> responseType = new ParameterizedTypeReference<ResponsePageDTO<CourseDTO>>() {};
-            result = restTemplate.exchange(url, HttpMethod.GET, null, responseType);
+
+        try {
+            final ParameterizedTypeReference<ResponsePageDTO<CourseDTO>> responseType
+                    = new ParameterizedTypeReference<>() {};
+
+            result = this.restTemplate
+                    .exchange(url, HttpMethod.GET, null, responseType);
+
             searchResult = result.getBody().getContent();
+
             log.debug("Response Number of Elements: {} ", searchResult.size());
-        } catch (HttpStatusCodeException e){
+        } catch (final HttpStatusCodeException e){
             log.error("Error request /courses {} ", e);
         }
         log.info("Ending request /courses userId {} ", userId);
