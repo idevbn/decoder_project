@@ -9,12 +9,9 @@ import java.util.UUID;
 @Service
 public class UtilsServiceImpl implements UtilsService {
 
-    private static final String REQUEST_URI = "http://localhost:8087";
-
     @Override
-    public String createUrl(final UUID courseId, final Pageable pageable) {
-        return REQUEST_URI
-                + "/users?courseId=" + courseId
+    public String createUrlGetAllUsersByCourse(final UUID courseId, final Pageable pageable) {
+        return "/users?courseId=" + courseId
                 + "&page=" + pageable.getPageNumber()
                 + "&size=" + pageable.getPageSize()
                 + "&sort=" + pageable.getSort().toString().replace(": ", ",");
