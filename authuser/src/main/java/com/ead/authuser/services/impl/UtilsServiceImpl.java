@@ -17,7 +17,7 @@ public class UtilsServiceImpl implements UtilsService {
                 + "/courses?userId=" + userId
                 + "&page=" + pageable.getPageNumber()
                 + "&size=" + pageable.getPageSize()
-                + "&sort=" + pageable.getSort().toString().replaceAll(":", ",");
+                + "&sort=" + pageable.getSort().toString().replaceAll(": ", ",");
 
         return url;
     }
