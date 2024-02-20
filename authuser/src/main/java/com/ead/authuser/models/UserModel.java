@@ -77,4 +77,8 @@ public class UserModel extends RepresentationModel<UserModel> implements Seriali
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Set<UserCourseModel> usersCourseModel;
 
+    public UserCourseModel convertToUserCourseModel(final UUID courseId) {
+        return new UserCourseModel(null, this, courseId);
+    }
+
 }
