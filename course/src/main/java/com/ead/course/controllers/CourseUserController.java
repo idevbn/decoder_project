@@ -91,7 +91,9 @@ public class CourseUserController {
         }
 
         final CourseUserModel courseUserModel = this.courseUserService
-                .save(optionalCourseModel.get().convertToCourseUserModel(subscriptionDTO.getUserId()));
+                .saveAndSendSubscriptionUserInCourse(
+                        optionalCourseModel.get().convertToCourseUserModel(subscriptionDTO.getUserId())
+                );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(courseUserModel);
     }
