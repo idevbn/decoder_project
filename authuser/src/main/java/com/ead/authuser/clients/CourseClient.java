@@ -1,7 +1,7 @@
 package com.ead.authuser.clients;
 
-import com.ead.authuser.controllers.dtos.CourseDTO;
-import com.ead.authuser.controllers.dtos.ResponsePageDTO;
+import com.ead.authuser.dtos.CourseDTO;
+import com.ead.authuser.dtos.ResponsePageDTO;
 import com.ead.authuser.services.UtilsService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
