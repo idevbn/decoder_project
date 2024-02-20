@@ -66,4 +66,15 @@ public class AuthUserClient {
         return result.getBody();
     }
 
+    public ResponseEntity<UserDTO> getOneUserById(final UUID userId) {
+        final String url = this.REQUEST_URL_AUTHUSER + "/users/" + userId;
+
+        return this.restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                null,
+                UserDTO.class
+        );
+    }
+
 }
