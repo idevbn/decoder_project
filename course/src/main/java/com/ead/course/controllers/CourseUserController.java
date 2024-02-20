@@ -1,8 +1,9 @@
 package com.ead.course.controllers;
 
-import com.ead.course.clients.CourseClient;
+import com.ead.course.clients.AuthUserClient;
 import com.ead.course.dtos.SubscriptionDTO;
 import com.ead.course.dtos.UserDTO;
+import com.ead.course.enums.UserStatus;
 import com.ead.course.models.CourseModel;
 import com.ead.course.models.CourseUserModel;
 import com.ead.course.services.CourseService;
@@ -16,6 +17,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import javax.validation.Valid;
 import java.util.Optional;
@@ -26,15 +28,15 @@ import java.util.UUID;
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class CourseUserController {
 
-    private final CourseClient courseClient;
+    private final AuthUserClient authUserClient;
     private final CourseService courseService;
     private final CourseUserService courseUserService;
 
     @Autowired
-    public CourseUserController(final CourseClient courseClient,
+    public CourseUserController(final AuthUserClient authUserClient,
                                 final CourseService courseService,
                                 final CourseUserService courseUserService) {
-        this.courseClient = courseClient;
+        this.authUserClient = authUserClient;
         this.courseService = courseService;
         this.courseUserService = courseUserService;
     }
@@ -45,7 +47,7 @@ public class CourseUserController {
             final Pageable pageable,
             @PathVariable(value = "courseId") final UUID courseId
     ) {
-        final Page<UserDTO> allCoursesByUser = this.courseClient
+        final Page<UserDTO> allCoursesByUser = this.authUserClient
                 .getAllUsersByCourse(courseId, pageable);
 
         final ResponseEntity<Page<UserDTO>> usersByCourseResponse = ResponseEntity
@@ -60,6 +62,8 @@ public class CourseUserController {
             @PathVariable(value = "courseId") final UUID courseId,
             @RequestBody @Valid final SubscriptionDTO subscriptionDTO
     ) {
+        ResponseEntity<UserDTO> responseUser;
+
         final Optional<CourseModel> optionalCourseModel = this.courseService.findById(courseId);
 
         if (optionalCourseModel.isEmpty()) {
@@ -73,12 +77,23 @@ public class CourseUserController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
-        // Necessário fazer verificação de user
+        try {
+            responseUser = this.authUserClient.getOneUserById(subscriptionDTO.getUserId());
+
+            if (responseUser.getBody().getUserStatus().equals(UserStatus.BLOCKED)) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            }
+        } catch (final HttpStatusCodeException e) {
+            if (e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+
+        }
 
         final CourseUserModel courseUserModel = this.courseUserService
                 .save(optionalCourseModel.get().convertToCourseUserModel(subscriptionDTO.getUserId()));
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(courseUserModel);
     }
 
 }
