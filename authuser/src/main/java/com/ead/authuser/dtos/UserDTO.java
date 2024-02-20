@@ -1,4 +1,4 @@
-package com.ead.authuser.controllers.dtos;
+package com.ead.authuser.dtos;
 
 import com.ead.authuser.controllers.AuthController;
 import com.ead.authuser.validations.UsernameConstraint;

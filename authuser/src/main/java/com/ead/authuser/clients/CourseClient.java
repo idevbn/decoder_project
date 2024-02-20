@@ -23,7 +23,7 @@ import java.util.UUID;
  */
 @Log4j2
 @Component
-public class UserClient {
+public class CourseClient {
 
     private final RestTemplate restTemplate;
     private final UtilsService utilsService;
@@ -32,7 +32,7 @@ public class UserClient {
     private String REQUEST_URL_COURSE;
 
     @Autowired
-    public UserClient(final RestTemplate restTemplate, final UtilsService utilsService) {
+    public CourseClient(final RestTemplate restTemplate, final UtilsService utilsService) {
         this.restTemplate = restTemplate;
         this.utilsService = utilsService;
     }
