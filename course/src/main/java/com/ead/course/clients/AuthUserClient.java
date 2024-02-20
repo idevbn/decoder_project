@@ -20,7 +20,7 @@ import java.util.UUID;
 
 @Log4j2
 @Component
-public class CourseClient {
+public class AuthUserClient {
 
     private final RestTemplate restTemplate;
     private final UtilsService utilsService;
@@ -29,8 +29,8 @@ public class CourseClient {
     private String REQUEST_URL_AUTHUSER;
 
     @Autowired
-    public CourseClient(final RestTemplate restTemplate,
-                        final UtilsService utilsService) {
+    public AuthUserClient(final RestTemplate restTemplate,
+                          final UtilsService utilsService) {
         this.restTemplate = restTemplate;
         this.utilsService = utilsService;
     }
