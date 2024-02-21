@@ -4,7 +4,7 @@ import com.ead.course.dtos.CourseDTO;
 import com.ead.course.models.CourseModel;
 import com.ead.course.services.CourseService;
 import com.ead.course.specifications.SpecificationTemplate;
-import com.ead.course.validation.CourseValidatior;
+import com.ead.course.validation.CourseValidator;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,13 +28,13 @@ import java.util.UUID;
 public class CourseController {
 
     private final CourseService courseService;
-    private final CourseValidatior courseValidatior;
+    private final CourseValidator courseValidator;
 
     @Autowired
     public CourseController(final CourseService courseService,
-                            final CourseValidatior courseValidatior) {
+                            final CourseValidator courseValidator) {
         this.courseService = courseService;
-        this.courseValidatior = courseValidatior;
+        this.courseValidator = courseValidator;
     }
 
     @PostMapping
@@ -42,7 +42,7 @@ public class CourseController {
                                                   final Errors errors) {
         var courseModel = new CourseModel();
 
-        this.courseValidatior.validate(courseDTO, errors);
+        this.courseValidator.validate(courseDTO, errors);
 
         if (errors.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors.getAllErrors());

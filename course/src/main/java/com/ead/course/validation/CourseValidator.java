@@ -15,14 +15,14 @@ import org.springframework.web.client.HttpStatusCodeException;
 import java.util.UUID;
 
 @Component
-public class CourseValidatior implements Validator {
+public class CourseValidator implements Validator {
 
     private final Validator validator;
     private final AuthUserClient authUserClient;
 
     @Autowired
-    public CourseValidatior(final Validator validator,
-                            final AuthUserClient authUserClient) {
+    public CourseValidator(final Validator validator,
+                           final AuthUserClient authUserClient) {
         this.validator = validator;
         this.authUserClient = authUserClient;
     }
