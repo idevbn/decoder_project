@@ -28,7 +28,7 @@ public class CourseClient {
     private final RestTemplate restTemplate;
     private final UtilsService utilsService;
 
-    @Value("$(ead.api.url.course)")
+    @Value("${ead.api.url.course}")
     private String REQUEST_URL_COURSE;
 
     @Autowired
