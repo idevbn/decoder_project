@@ -8,7 +8,6 @@ spring:
     ansi:
       enabled: always
 
-# Configurações do Eureka para que a aplicação não registre a si mesma como client
 eureka:
   client:
     registerWithEureka: false
