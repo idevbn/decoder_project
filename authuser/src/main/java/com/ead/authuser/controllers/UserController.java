@@ -26,8 +26,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Log4j2
 @RestController
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping(value = "/users")
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class UserController {
 
     private final UserService userService;
@@ -69,28 +69,20 @@ public class UserController {
     }
 
     @GetMapping(value = "/{userId}")
-    public ResponseEntity<UserModel> getOneUser(
+    public ResponseEntity<Object> getOneUser(
             @PathVariable(name = "userId") final UUID userId
     ) {
         final Optional<UserModel> userModelOptional = this.userService.findById(userId);
 
         if (userModelOptional.isEmpty()) {
-            final ResponseEntity<UserModel> userResponse = ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .build();
-            
-            return userResponse;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
         }
 
-        final ResponseEntity<UserModel> userResponse = ResponseEntity
-                .status(HttpStatus.OK)
-                .body(userModelOptional.get());
-
-        return userResponse;
+        return ResponseEntity.status(HttpStatus.OK).body(userModelOptional.get());
     }
 
     @DeleteMapping(value = "/{userId}")
-    public ResponseEntity<UserModel> deleteUser(
+    public ResponseEntity<Object> deleteUser(
             @PathVariable(name = "userId") final UUID userId
     ) {
         log.debug("DELETE deleteUser userId received {} ", userId);
@@ -101,24 +93,19 @@ public class UserController {
             log.debug("DELETE deleteUser userId deleted {} ", userId);
             log.info("User deleted successfully userId {} ", userId);
 
-            final ResponseEntity<UserModel> userResponse = ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .build();
-
-            return userResponse;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
         }
 
         this.userService.delete(userModelOptional.get());
 
-        final ResponseEntity<UserModel> userResponse = ResponseEntity
-                .status(HttpStatus.OK)
-                .build();
+        log.debug("DELETE deleteUser userId deleted {} ", userId);
+        log.info("User deleted successfully userId {} ", userId);
 
-        return userResponse;
+        return ResponseEntity.status(HttpStatus.OK).body("User deleted successfully.");
     }
 
     @PutMapping(value = "/{userId}")
-    public ResponseEntity<UserModel> updateUser(
+    public ResponseEntity<Object> updateUser(
             @PathVariable(name = "userId") final UUID userId,
             @RequestBody
             @Validated(UserDTO.UserView.UserPut.class)
@@ -129,11 +116,7 @@ public class UserController {
         final Optional<UserModel> userModelOptional = this.userService.findById(userId);
 
         if (userModelOptional.isEmpty()) {
-            final ResponseEntity<UserModel> userResponse = ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .build();
-
-            return userResponse;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
         }
 
         final UserModel userModel = userModelOptional.get();
@@ -144,18 +127,14 @@ public class UserController {
 
         this.userService.save(userModel);
 
-        final ResponseEntity<UserModel> userResponse = ResponseEntity
-                .status(HttpStatus.OK)
-                .body(userModel);
-
         log.debug("PUT updateUser userModel saved {} ", userModel.toString());
         log.info("User updated successfully userId {} ", userModel.getUserId());
 
-        return userResponse;
+        return ResponseEntity.status(HttpStatus.OK).body(userModel);
     }
 
     @PutMapping(value = "/{userId}/password")
-    public ResponseEntity<UserModel> updatePassword(
+    public ResponseEntity<Object> updatePassword(
             @PathVariable(name = "userId") final UUID userId,
             @RequestBody
             @Validated(UserDTO.UserView.PasswordPut.class)
@@ -166,21 +145,13 @@ public class UserController {
         final Optional<UserModel> userModelOptional = this.userService.findById(userId);
 
         if (userModelOptional.isEmpty()) {
-            final ResponseEntity<UserModel> userResponse = ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .build();
-
-            return userResponse;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
         }
 
         if (userModelOptional.get().getPassword().equals(userDTO.getOldPassword())) {
             log.warn("Mismatched old password userId {} ", userId);
 
-            final ResponseEntity<UserModel> userResponse = ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .build();
-
-            return userResponse;
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Mismatched old password!");
         }
 
         final UserModel userModel = userModelOptional.get();
@@ -189,18 +160,14 @@ public class UserController {
 
         this.userService.save(userModel);
 
-        final ResponseEntity<UserModel> userResponse = ResponseEntity
-                .status(HttpStatus.OK)
-                .build();
-
         log.debug("PUT updatePassword userModel userId {} ", userModel.getUserId());
         log.info("Password updated successfully userId {} ", userModel.getUserId());
 
-        return userResponse;
+        return ResponseEntity.status(HttpStatus.OK).body("Password updated successfully.");
     }
 
     @PutMapping(value = "/{userId}/image")
-    public ResponseEntity<UserModel> updateImage(
+    public ResponseEntity<Object> updateImage(
             @PathVariable(name = "userId") final UUID userId,
             @RequestBody
             @Validated(UserDTO.UserView.ImagePut.class)
@@ -211,11 +178,7 @@ public class UserController {
         final Optional<UserModel> userModelOptional = this.userService.findById(userId);
 
         if (userModelOptional.isEmpty()) {
-            final ResponseEntity<UserModel> userResponse = ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .build();
-
-            return userResponse;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
         }
 
         final UserModel userModel = userModelOptional.get();
@@ -224,14 +187,10 @@ public class UserController {
 
         this.userService.save(userModel);
 
-        final ResponseEntity<UserModel> userResponse = ResponseEntity
-                .status(HttpStatus.OK)
-                .body(userModel);
-
         log.debug("PUT updateImage userModel userId {} ", userModel.getUserId());
         log.info("Image updated successfully userId {} ", userModel.getUserId());
 
-        return userResponse;
+        return ResponseEntity.status(HttpStatus.OK).body(userModel);
     }
 
 }
