@@ -1,5 +1,6 @@
 package com.ead.course.services.impl;
 
+import com.ead.course.clients.AuthUserClient;
 import com.ead.course.models.CourseModel;
 import com.ead.course.models.CourseUserModel;
 import com.ead.course.models.LessonModel;
@@ -27,18 +28,21 @@ public class CourseServiceImpl implements CourseService {
     private final ModuleRepository moduleRepository;
     private final LessonRepository lessonRepository;
     private final CourseUserRepository courseUserRepository;
+    private final AuthUserClient authUserClient;
 
     @Autowired
     public CourseServiceImpl(
             final CourseRepository courseRepository,
             final ModuleRepository moduleRepository,
             final LessonRepository lessonRepository,
-            final CourseUserRepository courseUserRepository
+            final CourseUserRepository courseUserRepository,
+            final AuthUserClient authUserClient
     ) {
         this.courseRepository = courseRepository;
         this.moduleRepository = moduleRepository;
         this.lessonRepository = lessonRepository;
         this.courseUserRepository = courseUserRepository;
+        this.authUserClient = authUserClient;
     }
 
     /**
@@ -58,6 +62,8 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional
     public void delete(final CourseModel courseModel) {
+        boolean deleteCourseUserInAuthUser = false;
+
         final List<ModuleModel> moduleModelList
                 = this.moduleRepository.findAllModulesIntoCourse(courseModel.getCourseId());
 
@@ -79,9 +85,14 @@ public class CourseServiceImpl implements CourseService {
 
         if (!courseUserModelList.isEmpty()) {
             this.courseUserRepository.deleteAll(courseUserModelList);
+            deleteCourseUserInAuthUser = true;
         }
 
         this.courseRepository.delete(courseModel);
+
+        if (deleteCourseUserInAuthUser) {
+            this.authUserClient.deleteCourseInAuthUser(courseModel.getCourseId());
+        }
     }
 
     @Override
