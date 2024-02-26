@@ -65,4 +65,10 @@ public class CourseClient {
         return result.getBody();
     }
 
+    public void deleteUserInCourse(final UUID userId) {
+        final String url = this.REQUEST_URL_COURSE + "courses/users/" + userId;
+
+        this.restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
+    }
+
 }
