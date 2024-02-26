@@ -51,18 +51,20 @@ public class UserCourseController {
      * @return {@link CourseDTO} com os cursos do usuário
      */
     @GetMapping(value = "/users/{userId}/courses")
-    public ResponseEntity<Page<CourseDTO>> getAllCoursesByUser(
+    public ResponseEntity<Object> getAllCoursesByUser(
             @PageableDefault(page = 0, size = 10, sort = "courseId", direction = Sort.Direction.ASC)
             final Pageable pageable,
             @PathVariable(value = "userId") final UUID userId
     ) {
+        final Optional<UserModel> optionalUserModel = this.userService.findById(userId);
+
+        if (optionalUserModel.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+        }
+
         final Page<CourseDTO> allCoursesByUser = this.courseClient.getAllCoursesByUser(userId, pageable);
 
-        final ResponseEntity<Page<CourseDTO>> coursesByUserResponse = ResponseEntity
-                .status(HttpStatus.OK)
-                .body(allCoursesByUser);
-
-        return coursesByUserResponse;
+        return ResponseEntity.status(HttpStatus.OK).body(allCoursesByUser);
     }
 
     @PostMapping(value = "/users/{userId}/courses/subscription")
