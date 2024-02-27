@@ -69,25 +69,25 @@ public class CourseUserController {
         final Optional<CourseModel> optionalCourseModel = this.courseService.findById(courseId);
 
         if (optionalCourseModel.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course Not Found.");
         }
 
         final boolean existsByCourseAndUserId = this.courseUserService
                 .existsByCourseAndUserId(optionalCourseModel.get(), subscriptionDTO.getUserId());
 
         if (existsByCourseAndUserId) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: subscription already exists!");
         }
 
         try {
             responseUser = this.authUserClient.getOneUserById(subscriptionDTO.getUserId());
 
             if (responseUser.getBody().getUserStatus().equals(UserStatus.BLOCKED)) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).build();
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("User is blocked.");
             }
         } catch (final HttpStatusCodeException e) {
             if (e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
             }
 
         }
