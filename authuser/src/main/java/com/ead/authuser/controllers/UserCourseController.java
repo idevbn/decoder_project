@@ -75,14 +75,14 @@ public class UserCourseController {
         final Optional<UserModel> userModelOptional = this.userService.findById(userId);
 
         if (userModelOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
         }
 
         final boolean existsByUserAndCourseId = this.userCourseService
                 .existsByUserAndCourseId(userModelOptional.get(), userCourseDTO.getCourseId());
 
         if (existsByUserAndCourseId) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: subscription already exists!");
         }
 
         final UserCourseModel userCourseModel = this.userCourseService
@@ -96,7 +96,7 @@ public class UserCourseController {
             @PathVariable(value = "courseId") final UUID courseId
     ) {
         if (!this.userCourseService.existsByCourseId(courseId)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body( "UserCourse not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("UserCourse not found.");
         }
 
         this.userCourseService.deleteUserCourseByCourse(courseId);

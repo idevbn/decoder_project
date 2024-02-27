@@ -61,11 +61,7 @@ public class UserController {
             }
         }
 
-        final ResponseEntity<Page<UserModel>> usersResponse = ResponseEntity
-                .status(HttpStatus.OK)
-                .body(userModelPage);
-
-        return usersResponse;
+        return ResponseEntity.status(HttpStatus.OK).body(userModelPage);
     }
 
     @GetMapping(value = "/{userId}")

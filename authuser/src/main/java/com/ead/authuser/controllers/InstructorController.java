@@ -37,7 +37,7 @@ public class InstructorController {
                 .findById(instructorDTO.getUserId());
 
         if (optionalUserModel.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
         }
 
         final UserModel userModel = optionalUserModel.get();

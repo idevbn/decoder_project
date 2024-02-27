@@ -41,21 +41,17 @@ public class AuthController {
         if (this.userService.existsByUserName(userDTO.getUsername())) {
             log.warn("Username {} is already taken!", userDTO.getUsername());
 
-            final ResponseEntity<Object> userResponse = ResponseEntity
+            return ResponseEntity
                     .status(HttpStatus.CONFLICT)
                     .body("Error: Username is already taken!");
-
-            return userResponse;
         }
 
         if (this.userService.existsByEmail(userDTO.getEmail())) {
             log.warn("Email {} is already taken!", userDTO.getEmail());
 
-            final ResponseEntity<Object> userResponse = ResponseEntity
+            return ResponseEntity
                     .status(HttpStatus.CONFLICT)
                     .body("Error: Email is already taken!");
-
-            return userResponse;
         }
 
         var userModel = new UserModel();
@@ -68,14 +64,10 @@ public class AuthController {
 
         this.userService.save(userModel);
 
-        final ResponseEntity<Object> userResponse = ResponseEntity.
-                status(HttpStatus.CREATED)
-                .body(userModel);
-
         log.debug("POST registerUser userModel userId {}", userModel.getUserId());
         log.info("User saved successfully userId {}", userModel.getUserId());
 
-        return userResponse;
+        return ResponseEntity.status(HttpStatus.CREATED).body(userModel);
     }
 
 }
