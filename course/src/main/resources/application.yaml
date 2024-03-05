@@ -10,7 +10,7 @@ spring:
     ansi:
       enabled: always
   datasource:
-    url: jdbc:postgresql://localhost:5432/ead_course
+    url: jdbc:postgresql://localhost:5432/ead_course_v2
     username: postgres
     password: 123456
   jpa:
