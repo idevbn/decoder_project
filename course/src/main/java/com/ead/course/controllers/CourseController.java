@@ -8,7 +8,6 @@ import com.ead.course.validation.CourseValidator;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -113,16 +112,7 @@ public class CourseController {
             final Pageable pageable,
             @RequestParam(required = false) final UUID userId
     ) {
-        Page<CourseModel> courseModelPagel = null;
-
-        if (userId != null) {
-            courseModelPagel = this.courseService
-                    .findAll(SpecificationTemplate.courseUserId(userId).and(spec), pageable);
-        } else {
-            courseModelPagel = this.courseService.findAll(spec, pageable);
-        }
-
-        return ResponseEntity.status(HttpStatus.OK).body(courseModelPagel);
+        return ResponseEntity.status(HttpStatus.OK).body(this.courseService.findAll(spec, pageable));
     }
 
     @GetMapping(value = "/{id}")
