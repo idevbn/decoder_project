@@ -1,23 +1,10 @@
 package com.ead.course.repositories;
 
-import com.ead.course.models.CourseModel;
 import com.ead.course.models.UserModel;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
-import java.util.List;
 import java.util.UUID;
 
-public interface CourseUserRepository extends JpaRepository<UserModel, UUID> {
-
-    boolean existsByCourseAndUserId(final CourseModel courseModel, final UUID userId);
-
-    @Query(value = "SELECT * FROM tb_courses_users WHERE course_course_id = :courseId", nativeQuery = true)
-    List<UserModel> findAllCourseUserIntoCourse(@Param("courseId") final UUID courseId);
-
-    boolean existsByUserId(final UUID userId);
-
-    void deleteAllByUserId(final UUID userId);
+public interface UserRepository extends JpaRepository<UserModel, UUID> {
 
 }

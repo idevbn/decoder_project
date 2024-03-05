@@ -1,14 +1,12 @@
 package com.ead.course.services.impl;
 
-import com.ead.course.clients.AuthUserClient;
 import com.ead.course.models.CourseModel;
-import com.ead.course.models.CourseUserModel;
 import com.ead.course.models.LessonModel;
 import com.ead.course.models.ModuleModel;
 import com.ead.course.repositories.CourseRepository;
-import com.ead.course.repositories.CourseUserRepository;
 import com.ead.course.repositories.LessonRepository;
 import com.ead.course.repositories.ModuleRepository;
+import com.ead.course.repositories.UserRepository;
 import com.ead.course.services.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,22 +25,19 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final ModuleRepository moduleRepository;
     private final LessonRepository lessonRepository;
-    private final CourseUserRepository courseUserRepository;
-    private final AuthUserClient authUserClient;
+    private final UserRepository courseUserRepository;
 
     @Autowired
     public CourseServiceImpl(
             final CourseRepository courseRepository,
             final ModuleRepository moduleRepository,
             final LessonRepository lessonRepository,
-            final CourseUserRepository courseUserRepository,
-            final AuthUserClient authUserClient
+            final UserRepository courseUserRepository
     ) {
         this.courseRepository = courseRepository;
         this.moduleRepository = moduleRepository;
         this.lessonRepository = lessonRepository;
         this.courseUserRepository = courseUserRepository;
-        this.authUserClient = authUserClient;
     }
 
     /**
@@ -62,8 +57,6 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional
     public void delete(final CourseModel courseModel) {
-        boolean deleteCourseUserInAuthUser = false;
-
         final List<ModuleModel> moduleModelList
                 = this.moduleRepository.findAllModulesIntoCourse(courseModel.getCourseId());
 
@@ -80,19 +73,7 @@ public class CourseServiceImpl implements CourseService {
             this.moduleRepository.deleteAll(moduleModelList);
         }
 
-        final List<CourseUserModel> courseUserModelList = this.courseUserRepository
-                .findAllCourseUserIntoCourse(courseModel.getCourseId());
-
-        if (!courseUserModelList.isEmpty()) {
-            this.courseUserRepository.deleteAll(courseUserModelList);
-            deleteCourseUserInAuthUser = true;
-        }
-
         this.courseRepository.delete(courseModel);
-
-        if (deleteCourseUserInAuthUser) {
-            this.authUserClient.deleteCourseInAuthUser(courseModel.getCourseId());
-        }
     }
 
     @Override
