@@ -41,21 +41,12 @@ public class UserController {
     public ResponseEntity<Page<UserModel>> getAllUsers(
             final SpecificationTemplate.UserSpec spec,
             @PageableDefault(page = 0, size = 10, sort = "userId", direction = Sort.Direction.ASC)
-            final Pageable pageable,
-            @RequestParam(required = false) final UUID courseId
+            final Pageable pageable
             ) {
-        Page<UserModel> userModelPage = null;
-
-        if (courseId != null) {
-            userModelPage = this
-                    .userService
-                    .findAll(SpecificationTemplate.userCourseId(courseId).and(spec), pageable);
-        } else {
-            userModelPage = this.userService.findAll(spec, pageable);
-        }
+        final Page<UserModel> userModelPage = this.userService.findAll(spec, pageable);
 
         if (!userModelPage.isEmpty()) {
-            for (UserModel user : userModelPage.toList()) {
+            for (final UserModel user : userModelPage.toList()) {
                 user.add(linkTo(methodOn(UserController.class)
                         .getOneUser(user.getUserId())).withSelfRel());
             }
