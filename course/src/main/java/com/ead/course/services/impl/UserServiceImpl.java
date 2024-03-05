@@ -2,9 +2,9 @@ package com.ead.course.services.impl;
 
 import com.ead.course.clients.AuthUserClient;
 import com.ead.course.models.CourseModel;
-import com.ead.course.models.CourseUserModel;
-import com.ead.course.repositories.CourseUserRepository;
-import com.ead.course.services.CourseUserService;
+import com.ead.course.models.UserModel;
+import com.ead.course.repositories.UserRepository;
+import com.ead.course.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,13 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
 @Service
-public class CourseUserServiceImpl implements CourseUserService {
+public class CourseUserServiceImpl implements UserService {
 
-    private final CourseUserRepository courseUserRepository;
+    private final UserRepository courseUserRepository;
     private final AuthUserClient authUserClient;
 
     @Autowired
-    public CourseUserServiceImpl(final CourseUserRepository courseUserRepository,
+    public CourseUserServiceImpl(final UserRepository courseUserRepository,
                                  final AuthUserClient authUserClient) {
         this.courseUserRepository = courseUserRepository;
         this.authUserClient = authUserClient;
@@ -30,14 +30,14 @@ public class CourseUserServiceImpl implements CourseUserService {
     }
 
     @Override
-    public CourseUserModel save(final CourseUserModel courseUserModel) {
+    public UserModel save(final UserModel courseUserModel) {
         return this.courseUserRepository.save(courseUserModel);
     }
 
     @Override
     @Transactional
-    public CourseUserModel saveAndSendSubscriptionUserInCourse(final CourseUserModel courseUserModel) {
-        final CourseUserModel savedCourseUserModel = this.courseUserRepository.save(courseUserModel);
+    public UserModel saveAndSendSubscriptionUserInCourse(final UserModel courseUserModel) {
+        final UserModel savedCourseUserModel = this.courseUserRepository.save(courseUserModel);
 
         this.authUserClient.postSubscriptionUserInCourse(
                 savedCourseUserModel.getCourse().getCourseId(),
