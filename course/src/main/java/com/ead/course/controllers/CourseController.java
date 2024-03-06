@@ -112,6 +112,12 @@ public class CourseController {
             final Pageable pageable,
             @RequestParam(required = false) final UUID userId
     ) {
+        if (userId != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(this.courseService.findAll(
+                    SpecificationTemplate.courseUserId(userId).and(spec), pageable)
+            );
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(this.courseService.findAll(spec, pageable));
     }
 
