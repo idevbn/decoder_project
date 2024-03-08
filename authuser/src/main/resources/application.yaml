@@ -23,7 +23,7 @@ spring:
       hibernate:
         show_sql: true
   rabbitmq:
-    address: amqps://sitwvwol:ZJW1odeSgKRgzF2IzTs99mEWYxwXEzMQ@fish.rmq.cloudamqp.com/sitwvwol
+    addresses: amqps://sitwvwol:ZJW1odeSgKRgzF2IzTs99mEWYxwXEzMQ@fish.rmq.cloudamqp.com/sitwvwol
 
 logging:
   level:
@@ -36,6 +36,9 @@ ead:
   api:
     url:
       course: 'http://ead-course-service/ead-course/'
+  broker:
+    exchange:
+      userEvent: ead.userevent
 
 eureka:
   client:
