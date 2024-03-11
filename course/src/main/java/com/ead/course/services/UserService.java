@@ -5,9 +5,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.UUID;
+
 public interface UserService {
 
     Page<UserModel> findAll(final Specification<UserModel> spec, final Pageable pageable);
 
     UserModel save(final UserModel userModel);
+
+    void delete(final UUID userId);
 }
