@@ -107,4 +107,15 @@ public class CourseServiceImpl implements CourseService {
         return courseModelPage;
     }
 
+    @Override
+    public boolean existsByCourseAndUser(final UUID courseId, final UUID userId) {
+        return this.courseRepository.existsByCourseAndUser(courseId, userId);
+    }
+
+    @Override
+    @Transactional
+    public void saveSubscriptionUserInCourse(final UUID courseId, final UUID userId) {
+        this.courseRepository.saveCourseUser(courseId, userId);
+    }
+
 }
