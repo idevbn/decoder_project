@@ -83,7 +83,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
         }
 
-        this.userService.delete(userModelOptional.get());
+        this.userService.deleteUser(userModelOptional.get());
 
         log.debug("DELETE deleteUser userId deleted {} ", userId);
         log.info("User deleted successfully userId {} ", userId);
@@ -112,7 +112,7 @@ public class UserController {
         userModel.setCpf(userDTO.getCpf());
         userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
 
-        this.userService.save(userModel);
+        this.userService.updateUser(userModel);
 
         log.debug("PUT updateUser userModel saved {} ", userModel.toString());
         log.info("User updated successfully userId {} ", userModel.getUserId());
@@ -145,7 +145,7 @@ public class UserController {
         userModel.setPassword(userDTO.getPassword());
         userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
 
-        this.userService.save(userModel);
+        this.userService.updatePassword(userModel);
 
         log.debug("PUT updatePassword userModel userId {} ", userModel.getUserId());
         log.info("Password updated successfully userId {} ", userModel.getUserId());
@@ -172,7 +172,7 @@ public class UserController {
         userModel.setImageUrl(userDTO.getImageUrl());
         userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
 
-        this.userService.save(userModel);
+        this.userService.updateUser(userModel);
 
         log.debug("PUT updateImage userModel userId {} ", userModel.getUserId());
         log.info("Image updated successfully userId {} ", userModel.getUserId());
