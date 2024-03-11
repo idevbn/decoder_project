@@ -101,7 +101,7 @@ public class SpecificationTemplate {
             final Expression<Collection<CourseModel>> usersCourses = user.get("courses");
 
             return cb.and(
-                    cb.equal(course.get("userId"), userId), cb.isMember(course, usersCourses)
+                    cb.equal(user.get("userId"), userId), cb.isMember(course, usersCourses)
             );
         };
     }
