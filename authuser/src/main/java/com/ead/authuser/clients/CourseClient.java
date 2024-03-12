@@ -3,7 +3,7 @@ package com.ead.authuser.clients;
 import com.ead.authuser.dtos.CourseDTO;
 import com.ead.authuser.dtos.ResponsePageDTO;
 import com.ead.authuser.services.UtilsService;
-import io.github.resilience4j.retry.annotation.Retry;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,6 +41,7 @@ public class CourseClient {
     }
 
 //    @Retry(name = "retryInstance", fallbackMethod = "retryfallback")
+    @CircuitBreaker(name = "circuitbreakerInstance")
     public Page<CourseDTO> getAllCoursesByUser(final UUID userId, final Pageable pageable) {
         final List<CourseDTO> searchResult;
 
@@ -67,6 +68,28 @@ public class CourseClient {
         }
         log.info("Ending request /courses userId {} ", userId);
         return result.getBody();
+    }
+
+    /**
+     * Método de fallback utilizado quando o número de tentativas de requisição é excedido
+     * e o circuit breaker entra no estado OPEN.
+     * Foi criado apenas como forma de ilustrar o processo, não possuindo significado na
+     * lógica do negócio, já que o cliente deve ser que o ms de course está indisponível.
+     * <br>
+     * Observação: os métodos de fallback devem ter os mesmos parâmetros do método princi-
+     * pal.
+     * <br>
+     * @param userId
+     * @param pageable
+     * @param t
+     * @return
+     */
+    public Page<CourseDTO> circuitbreakerfallback(final UUID userId,
+                                                  final Pageable pageable,
+                                                  final Throwable t) {
+        log.error("Inside circuit breaker fallback, cause - {}", t.toString());
+        final List<CourseDTO> searchResult = new ArrayList<>();
+        return new PageImpl<>(searchResult);
     }
 
     public Page<CourseDTO> retryfallback(final UUID userId, final Pageable pageable, final Throwable t) {
