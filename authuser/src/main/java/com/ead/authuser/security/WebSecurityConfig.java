@@ -2,6 +2,7 @@ package com.ead.authuser.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,17 +16,28 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final UserDetailsServiceImpl userDetailsService;
+    private final AuthenticationEntryPointImpl authenticationEntryPoint;
+
     private static final String[] AUTH_WHITELIST = {
             "/auth/**"
     };
+
+    public WebSecurityConfig(final UserDetailsServiceImpl userDetailsService,
+                             final AuthenticationEntryPointImpl authenticationEntryPoint) {
+        this.userDetailsService = userDetailsService;
+        this.authenticationEntryPoint = authenticationEntryPoint;
+    }
 
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http
                 .httpBasic()
+                .authenticationEntryPoint(this.authenticationEntryPoint)
                 .and()
                 .authorizeRequests()
                 .antMatchers(AUTH_WHITELIST).permitAll()
+                .antMatchers(HttpMethod.GET, "/users/**").hasRole("STUDENT")
                 .anyRequest().authenticated()
                 .and()
                 .csrf().disable();
@@ -33,10 +45,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("admin")
-                .password(this.passwordEncoder().encode("123456"))
-                .roles("ADMIN");
+        auth
+                .userDetailsService(this.userDetailsService)
+                .passwordEncoder(this.passwordEncoder());
     }
 
     @Bean
