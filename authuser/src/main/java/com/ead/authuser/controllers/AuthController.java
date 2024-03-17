@@ -1,11 +1,14 @@
 package com.ead.authuser.controllers;
 
+import com.ead.authuser.dtos.JwtDTO;
+import com.ead.authuser.dtos.LoginDTO;
 import com.ead.authuser.dtos.UserDTO;
 import com.ead.authuser.enums.RoleType;
 import com.ead.authuser.enums.UserStatus;
 import com.ead.authuser.enums.UserType;
 import com.ead.authuser.models.RoleModel;
 import com.ead.authuser.models.UserModel;
+import com.ead.authuser.security.JwtProvider;
 import com.ead.authuser.services.RoleService;
 import com.ead.authuser.services.UserService;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -14,10 +17,15 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
@@ -30,14 +38,20 @@ public class AuthController {
     private final UserService userService;
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtProvider jwtProvider;
 
     @Autowired
     public AuthController(final UserService userService,
                           final RoleService roleService,
-                          final PasswordEncoder passwordEncoder) {
+                          final PasswordEncoder passwordEncoder,
+                          final AuthenticationManager authenticationManager,
+                          final JwtProvider jwtProvider) {
         this.userService = userService;
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtProvider = jwtProvider;
     }
 
     @PostMapping(value = "/signup")
@@ -84,6 +98,19 @@ public class AuthController {
         log.info("User saved successfully userId {}", userModel.getUserId());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(userModel);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<JwtDTO> authenticateUser(@Valid @RequestBody final LoginDTO loginDTO) {
+        final Authentication authenticate = this.authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword())
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authenticate);
+
+        final String jwt = this.jwtProvider.generateJwt(authenticate);
+
+        return ResponseEntity.ok(new JwtDTO(jwt));
     }
 
 }
