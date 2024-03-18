@@ -2,6 +2,8 @@ package com.ead.authuser.controllers;
 
 import com.ead.authuser.dtos.UserDTO;
 import com.ead.authuser.models.UserModel;
+import com.ead.authuser.security.AuthenticationCurrentUserService;
+import com.ead.authuser.security.UserDetailsImpl;
 import com.ead.authuser.services.UserService;
 import com.ead.authuser.specifications.SpecificationTemplate;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -13,6 +15,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,18 +36,27 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class UserController {
 
     private final UserService userService;
+    private final AuthenticationCurrentUserService authenticationCurrentUserService;
 
     @Autowired
-    public UserController(final UserService userService) {
+    public UserController(final UserService userService,
+                          final AuthenticationCurrentUserService authenticationCurrentUserService) {
         this.userService = userService;
+        this.authenticationCurrentUserService = authenticationCurrentUserService;
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Page<UserModel>> getAllUsers(
             final SpecificationTemplate.UserSpec spec,
             @PageableDefault(page = 0, size = 10, sort = "userId", direction = Sort.Direction.ASC)
-            final Pageable pageable
+            final Pageable pageable,
+            final Authentication authentication
             ) {
+        final UserDetails userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        log.info("Authentication {}", userDetails.getUsername());
+
         final Page<UserModel> userModelPage = this.userService.findAll(spec, pageable);
 
         if (!userModelPage.isEmpty()) {
@@ -56,16 +70,24 @@ public class UserController {
     }
 
     @GetMapping(value = "/{userId}")
+    @PreAuthorize("hasAnyRole('STUDENT')")
     public ResponseEntity<Object> getOneUser(
             @PathVariable(name = "userId") final UUID userId
     ) {
-        final Optional<UserModel> userModelOptional = this.userService.findById(userId);
+        final UUID currentUserId = this.authenticationCurrentUserService
+                .getCurrentUser().getUserId();
 
-        if (userModelOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+        if (currentUserId.equals(userId)) {
+            final Optional<UserModel> userModelOptional = this.userService.findById(userId);
+
+            if (userModelOptional.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(userModelOptional.get());
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(userModelOptional.get());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Forbidden");
     }
 
     @DeleteMapping(value = "/{userId}")
