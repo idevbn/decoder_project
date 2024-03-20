@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -43,11 +44,13 @@ public class UserCourseController {
      * @param userId -> identificador do usuário
      * @return {@link CourseDTO} com os cursos do usuário
      */
+    @PreAuthorize("hasAnyRole('STUDENT')")
     @GetMapping(value = "/users/{userId}/courses")
     public ResponseEntity<Object> getAllCoursesByUser(
             @PageableDefault(page = 0, size = 10, sort = "courseId", direction = Sort.Direction.ASC)
             final Pageable pageable,
-            @PathVariable(value = "userId") final UUID userId
+            @PathVariable(value = "userId") final UUID userId,
+            @RequestHeader("Authorization") final String token
     ) {
         final Optional<UserModel> optionalUserModel = this.userService.findById(userId);
 
@@ -55,7 +58,7 @@ public class UserCourseController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
         }
 
-        final Page<CourseDTO> allCoursesByUser = this.courseClient.getAllCoursesByUser(userId, pageable);
+        final Page<CourseDTO> allCoursesByUser = this.courseClient.getAllCoursesByUser(userId, pageable, token);
 
         return ResponseEntity.status(HttpStatus.OK).body(allCoursesByUser);
     }
