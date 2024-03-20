@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,6 +40,7 @@ public class CourseController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('INSTRUCTOR')")
     public ResponseEntity<Object> saveCourse(@RequestBody final CourseDTO courseDTO,
                                                   final Errors errors) {
         log.debug("POST saveCourse courseDto received {} ", courseDTO.toString());
@@ -64,6 +66,7 @@ public class CourseController {
     }
 
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasAnyRole('INSTRUCTOR')")
     public ResponseEntity<Object> deleteCourse(@PathVariable(value = "id") final UUID id) {
         log.debug("DELETE deleteCourse courseId received {} ", id);
 
@@ -82,6 +85,7 @@ public class CourseController {
     }
 
     @PutMapping(value = "/{id}")
+    @PreAuthorize("hasAnyRole('INSTRUCTOR')")
     public ResponseEntity<Object> updateCourse(
             @PathVariable(value = "id") final UUID id,
             @RequestBody @Valid final CourseDTO courseDTO
@@ -106,6 +110,7 @@ public class CourseController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('STUDENT')")
     public ResponseEntity<Object> getAllCourses(
             final SpecificationTemplate.CourseSpec spec,
             @PageableDefault(page = 0, size = 10, sort = "courseId", direction = Sort.Direction.ASC)
@@ -122,6 +127,7 @@ public class CourseController {
     }
 
     @GetMapping(value = "/{id}")
+    @PreAuthorize("hasAnyRole('STUDENT')")
     public ResponseEntity<Object> getOneCourse(@PathVariable(value = "id") final UUID id) {
         final Optional<CourseModel> optionalCourseModel = this.courseService.findById(id);
 

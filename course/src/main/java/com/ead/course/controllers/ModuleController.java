@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -37,6 +38,7 @@ public class ModuleController {
         this.courseService = courseService;
     }
 
+    @PreAuthorize("hasAnyRole('INSTRUCTOR')")
     @PostMapping(value = "/courses/{courseId}/modules")
     public ResponseEntity<Object> saveModule(
             @RequestBody final ModuleDTO moduleDTO,
@@ -64,6 +66,7 @@ public class ModuleController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedModuleModel);
     }
 
+    @PreAuthorize("hasAnyRole('INSTRUCTOR')")
     @DeleteMapping(value = "/courses/{courseId}/modules/{moduleId}")
     public ResponseEntity<Object> deleteModule(
             @PathVariable(value = "courseId") final UUID courseId,
@@ -86,6 +89,7 @@ public class ModuleController {
         return ResponseEntity.status(HttpStatus.OK).body("Module deleted successfully.");
     }
 
+    @PreAuthorize("hasAnyRole('INSTRUCTOR')")
     @PutMapping(value = "/courses/{courseId}/modules/{moduleId}")
     public ResponseEntity<Object> updateModule(
             @PathVariable(value = "courseId") final UUID courseId,
@@ -112,6 +116,7 @@ public class ModuleController {
         return ResponseEntity.status(HttpStatus.OK).body(savedModuleModel);
     }
 
+    @PreAuthorize("hasAnyRole('STUDENT')")
     @GetMapping(value = "/courses/{courseId}/modules")
     public ResponseEntity<Page<ModuleModel>> getAllModules(
             @PathVariable(value = "courseId") final UUID courseId,
@@ -125,6 +130,7 @@ public class ModuleController {
         return ResponseEntity.status(HttpStatus.OK).body(modules);
     }
 
+    @PreAuthorize("hasAnyRole('STUDENT')")
     @GetMapping(value = "/courses/{courseId}/modules/{moduleId}")
     public ResponseEntity<Object> getOneModule(
             @PathVariable(value = "courseId") final UUID courseId,
