@@ -11,10 +11,11 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -40,32 +41,36 @@ public class CourseClient {
         this.utilsService = utilsService;
     }
 
-//    @Retry(name = "retryInstance", fallbackMethod = "retryfallback")
+    //    @Retry(name = "retryInstance", fallbackMethod = "retryfallback")
     @CircuitBreaker(name = "circuitbreakerInstance")
-    public Page<CourseDTO> getAllCoursesByUser(final UUID userId, final Pageable pageable) {
+    public Page<CourseDTO> getAllCoursesByUser(final UUID userId,
+                                               final Pageable pageable,
+                                               final String token) {
         final List<CourseDTO> searchResult;
 
         ResponseEntity<ResponsePageDTO<CourseDTO>> result = null;
 
         final String url = this.REQUEST_URL_COURSE + this.utilsService.createUrl(userId, pageable);
 
+        final HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", token);
+        final HttpEntity<String> requestEntity = new HttpEntity<>("parameters", headers);
+
         log.debug("Request URL: {} ", url);
 
         log.info("Request URL: {} ", url);
 
-        try {
-            final ParameterizedTypeReference<ResponsePageDTO<CourseDTO>> responseType
-                    = new ParameterizedTypeReference<>() {};
 
-            result = this.restTemplate
-                    .exchange(url, HttpMethod.GET, null, responseType);
+        final ParameterizedTypeReference<ResponsePageDTO<CourseDTO>> responseType
+                = new ParameterizedTypeReference<>() {
+        };
 
-            searchResult = result.getBody().getContent();
+        result = this.restTemplate
+                .exchange(url, HttpMethod.GET, requestEntity, responseType);
 
-            log.debug("Response Number of Elements: {} ", searchResult.size());
-        } catch (final HttpStatusCodeException e){
-            log.error("Error request /courses {} ", e);
-        }
+        searchResult = result.getBody().getContent();
+
+        log.debug("Response Number of Elements: {} ", searchResult.size());
         log.info("Ending request /courses userId {} ", userId);
         return result.getBody();
     }
@@ -79,6 +84,7 @@ public class CourseClient {
      * Observação: os métodos de fallback devem ter os mesmos parâmetros do método princi-
      * pal.
      * <br>
+     *
      * @param userId
      * @param pageable
      * @param t
