@@ -1,13 +1,6 @@
 server:
   port: 8761
 
-spring:
-  application:
-    name: ead-service-registry
-  output:
-    ansi:
-      enabled: always
-
 ead:
   serviceRegistry:
     username: serviceregistry
